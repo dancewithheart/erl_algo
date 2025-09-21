@@ -1,5 +1,4 @@
-erl_algo
-===
+# Erlang stuff
 
 ```text
  _________________________________________
@@ -23,18 +22,3 @@ erl_algo
 
 ```
 [Bell state](https://en.wikipedia.org/wiki/Bell_state)
-
-
-Notes
----
-
-* compile
-
-```shell
-rebar3 compile
-```
-* run unit tests
-
-```shell
-rebar3 eunit
-```
