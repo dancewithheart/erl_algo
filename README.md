@@ -6,10 +6,8 @@
 | qubits so they become entangled         |
 |                                         |
 | |00⟩ + |11⟩                             |
-|                                         |
 | -----------                             |
-|                                         |
-| sqrt(2)                                 |
+|   sqrt(2)                               |
 |                                         |
 | If you measure first as 0 the second    |
 \ have to be 0.                           /
