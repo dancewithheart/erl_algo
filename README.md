@@ -39,6 +39,12 @@ rebar3 eunit
 rebar3 eunit --test=fib_tests:fib_test_
 ```
 
+* run [PropEr]ty tests
+
+```shell
+rebar3 proper -m ya_sort_tests
+```
+
 * static code analysis using [Dialyzer](https://www.erlang.org/doc/apps/dialyzer/dialyzer_chapter.html)
 
 ```shell
