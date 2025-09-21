@@ -16,6 +16,8 @@ fibSlow_test_() ->
     ?_assertEqual( 5,         fibSlow(4) ),
     ?_assertEqual( 8,         fibSlow(5) ),
     ?_assertEqual( 89,        fibSlow(10) )
+    % naive fibonacci impl is ~40x slower
+    % on my machine, uncommenting increase time 0.05 sec -> 2 sec
     % , ?_assertEqual( 433494437, fibSlow(42) )
   ].
 

@@ -1,6 +1,9 @@
 -module(fib).
 -export([fib/1]).
 
+%% @docs compute n-th Fibonacci number
+%% O(n) complexity, uses bottom up dynamic programming and remembers only previous 2 numbers
+%% @see https://www.geeksforgeeks.org/dsa/program-for-nth-fibonacci-number/
 -spec fib(non_neg_integer()) -> pos_integer().
 fib(0) -> 1;
 fib(1) -> 1;
