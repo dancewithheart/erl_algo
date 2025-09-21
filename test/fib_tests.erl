@@ -1,13 +1,13 @@
 -module(fib_tests).
--import(fib, [fib/1]).
+-import(fib, [fibSlow/1]).
 -include_lib("eunit/include/eunit.hrl").
 
-fib_test_() ->
+fibSlow_test_() ->
   [
-    ?_assert( fib(0) =:= 1 ),
-    ?_assert( fib(1) =:= 1 ),
-    ?_assert( fib(2) =:= 2 ),
-    ?_assertEqual( fib(5), 8 ),
-    ?_assertEqual( fib(10), 89 ),
-    ?_assertEqual( fib(42), 165580141 )
+    ?_assert( fibSlow(0) =:= 1 ),
+    ?_assert( fibSlow(1) =:= 1 ),
+    ?_assert( fibSlow(2) =:= 2 ),
+    ?_assertEqual( fibSlow(5), 8 ),
+    ?_assertEqual( fibSlow(10), 89 ),
+    ?_assertEqual( fibSlow(42), 165580141 )
   ].

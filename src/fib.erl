@@ -1,7 +1,7 @@
 -module(fib).
--export([fib/1]).
+-export([fibSlow/1]).
 
--spec fib(integer()) -> integer().
-fib(0) -> 1;
-fib(1) -> 1;
-fib(N) when N > 1 -> fib(N-1) + fib(N-2).
+-spec fibSlow(non_neg_integer()) -> pos_integer().
+fibSlow(0) -> 1;
+fibSlow(1) -> 1;
+fibSlow(N) when N > 1 -> fibSlow(N-1) + fibSlow(N-2).
