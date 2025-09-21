@@ -45,6 +45,14 @@ rebar3 eunit --test=fib_tests:fib_test_
 rebar3 dialyzer
 ```
 
+## Erlang and Nix
+
+Nix Shell with Erlang 28
+
+```shell
+nix-shell -p erlang_28
+```
+
 ## Other Erlang notes
 
 * new project (app has supervisor)
