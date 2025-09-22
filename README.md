@@ -1,4 +1,4 @@
-[![Erlang CI](https://github.com/dancewithheart/erl_algo/actions/workflows/erlang.yml/badge.svg?branch=main)](https://github.com/dancewithheart/erl_algo/actions/workflows/erlang.yml?query=branch%3Amain) ![GitHub last commit](https://img.shields.io/github/last-commit/dancewithheart/erl_algo)
+[![Erlang CI](https://github.com/dancewithheart/erl_algo/actions/workflows/erlang.yml/badge.svg?branch=main)](https://github.com/dancewithheart/erl_algo/actions/workflows/erlang.yml?query=branch%3Amain) [![GitHub last commit](https://img.shields.io/github/last-commit/dancewithheart/erl_algo)](https://github.com/dancewithheart/erl_algo/commits/main/)
 
 # Why
 
