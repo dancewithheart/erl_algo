@@ -1,13 +1,13 @@
 # Erlang stuff
 
-## Notes on [rebar3](https://rebar3.org/docs/)
+## Notes on [Rebar3](https://rebar3.org/docs/)
 
 * compile
 
 ```shell
 rebar3 compile
 ```
-* run [eunit](https://www.erlang.org/doc/apps/eunit/chapter.html) tests
+* run [EUnit](https://www.erlang.org/doc/apps/eunit/chapter.html) tests
 
 ```shell
 rebar3 eunit
