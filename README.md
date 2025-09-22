@@ -17,7 +17,8 @@ rebar3 eunit --module=fib_tests
 * run [PropEr](https://propertesting.com/toc.html)ty tests
 
 ```shell
-rebar3 proper -m bst_tests
+rebar3 proper
+rebar3 proper -m prop_bst
 ```
 
 * static code analysis using [Dialyzer](https://www.erlang.org/doc/apps/dialyzer/dialyzer_chapter.html)

@@ -5,7 +5,7 @@
 %% https://softwarefoundations.cis.upenn.edu/vfa-current/SearchTree.html
 -module(bst).
 -export([empty/0, new/2, new/4, bound/2, lookup/3, insert/3, equal/2,
-    forall/2, isBST/1, elements/1]).
+    forall/2, is_bst/1, elements/1]).
 -record(tree, {left, key, value, rigt}).
 % #tree{left = L, key = K, value = V, rigt = R}
 % tree ::= bstEmpty | l: tree, k: K, v: V, r: tree
@@ -52,11 +52,11 @@ forall(P, #tree{left = L, key = K, value = V, rigt = R}) ->
   P(K,V) andalso forall(P, L) andalso forall(P, R).
 
 % check if #tree is proper BST
-isBST(empty) -> true;
-isBST(#tree{left = L, key = K, rigt = R}) ->
+is_bst(empty) -> true;
+is_bst(#tree{left = L, key = K, rigt = R}) ->
     forall(fun(K2,_) -> K2 < K end, L)
     andalso forall(fun(K2,_) -> K2 > K end, R)
-    andalso isBST(L) andalso isBST(R).
+    andalso is_bst(L) andalso is_bst(R).
 
 % converts BST to association list - in order travrsal
 elements(T) -> elements(T, []).

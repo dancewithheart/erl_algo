@@ -2,25 +2,6 @@
 -import(fib, [fib/1]).
 -include_lib("eunit/include/eunit.hrl").
 
--spec fibSlow(non_neg_integer()) -> pos_integer().
-fibSlow(0) -> 1;
-fibSlow(1) -> 1;
-fibSlow(N) when N > 1 -> fibSlow(N-1) + fibSlow(N-2).
-
-fibSlow_test_() ->
-  [
-    ?_assert( fibSlow(0) =:= 1 ),
-    ?_assert( fibSlow(1) =:= 1 ),
-    ?_assertEqual( 2,         fibSlow(2) ),
-    ?_assertEqual( 3,         fibSlow(3) ),
-    ?_assertEqual( 5,         fibSlow(4) ),
-    ?_assertEqual( 8,         fibSlow(5) ),
-    ?_assertEqual( 89,        fibSlow(10) )
-    % naive fibonacci impl is ~40x slower
-    % on my machine, uncommenting increase time 0.05 sec -> 2 sec
-    % , ?_assertEqual( 433494437, fibSlow(42) )
-  ].
-
 fib_test_() ->
   [
     ?_assert( fib(0) =:= 1 ),
