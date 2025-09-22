@@ -11,13 +11,13 @@ rebar3 compile
 
 ```shell
 rebar3 eunit
-rebar3 eunit --test=fib_tests:fib_test_
+rebar3 eunit --module=fib_tests
 ```
 
 * run [PropEr](https://propertesting.com/toc.html)ty tests
 
 ```shell
-rebar3 proper -m ya_sort_tests
+rebar3 proper -m bst_tests
 ```
 
 * static code analysis using [Dialyzer](https://www.erlang.org/doc/apps/dialyzer/dialyzer_chapter.html)
