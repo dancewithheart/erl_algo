@@ -1,11 +1,13 @@
+[![Erlang CI](https://github.com/dancewithheart/erl_algo/actions/workflows/erlang.yml/badge.svg?branch=main)](https://github.com/dancewithheart/erl_algo/actions/workflows/erlang.yml?query=branch%3Amain) ![GitHub last commit](https://img.shields.io/github/last-commit/dancewithheart/erl_algo)
+
 # Why
 
 Experiments with data structures implemented using FP language Erlang.
 I am exploring how development focsing on the correctness and reliability would look like, based on my experience in Scala, Haskell, TypeScript, Rust, Scheme, Java and formal methods in Agda and Rocq. Hence:
 * property tests, inspired by formal verification e.g. https://softwarefoundations.cis.upenn.edu/vfa-current/index.html
-* unit tests
 * use spec/types
 * use of static code analysis
+* unit tests
 
 ## How [Rebar3](https://rebar3.org/docs/)
 
@@ -41,3 +43,10 @@ Nix Shell with Erlang 28
 ```shell
 nix-shell -p erlang_28
 ```
+
+[Nix]: https://book.divnix.com/
+
+
+[license badge]: https://img.shields.io/badge/license-ISC-blue.svg
+[build tool]: https://img.shields.io/badge/build%20tool-rebar3-orange.svg
+[rebar3]: https://www.rebar3.org
