@@ -1,4 +1,4 @@
--module(bst_tests).
+-module(prop_bst_tests).
 -include_lib("proper/include/proper.hrl").
 -include_lib("eunit/include/eunit.hrl").
 
