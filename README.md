@@ -1,6 +1,13 @@
-# Erlang stuff
+# Why
 
-## Notes on [Rebar3](https://rebar3.org/docs/)
+Experiments with data structures implemented using FP language Erlang.
+I am exploring how development focsing on the correctness and reliability would look like, based on my experience in Scala, Haskell, TypeScript, Rust, Scheme, Java and formal methods in Agda and Rocq. Hence:
+* property tests, inspired by formal verification e.g. https://softwarefoundations.cis.upenn.edu/vfa-current/index.html
+* unit tests
+* use spec/types
+* use of static code analysis
+
+## How [Rebar3](https://rebar3.org/docs/)
 
 * compile
 
