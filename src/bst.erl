@@ -4,8 +4,12 @@
 %% by Andrew W. Appel
 %% https://softwarefoundations.cis.upenn.edu/vfa-current/SearchTree.html
 -module(bst).
--export([empty/0, new/2, new/4, bound/2, lookup/3, insert/3, equal/2,
-    forall/2, is_bst/1, elements/1]).
+-export([
+    empty/0, new/2, new/4,
+    bound/2, lookup/3, insert/3,
+    forall/2,
+    elements/1, from_list/1, 
+    is_bst/1, equal/2]).
 -record(tree, {left, key, value, rigt}).
 % #tree{left = L, key = K, value = V, rigt = R}
 % tree ::= bstEmpty | l: tree, k: K, v: V, r: tree
@@ -64,3 +68,18 @@ elements(T) -> elements(T, []).
 elements(empty, Acc) -> Acc;
 elements(#tree{left = L, key = K, value = V, rigt = R}, Acc) ->
     elements(L, [{K,V} | elements(R, Acc)]).
+
+% converts list to BST
+from_list([]) -> bst:empty();
+from_list(XS) ->
+  lists:foldl(fun({K, V}, Acc) -> bst:insert(K, V, Acc) end, bst:empty(), XS).
+
+% TODO merge two BST
+% TODO concat two BST
+
+% TODO delete from BST -> filter
+
+% TODO other traversals e.g. in order
+% TODO folds -> based on traversals
+
+% TODO map over values
