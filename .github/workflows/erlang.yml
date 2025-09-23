@@ -10,11 +10,8 @@ permissions:
   contents: read
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     container:
       image: erlang:27.0.1
 
@@ -30,5 +27,5 @@ jobs:
       run: rebar3 dialyzer
     - name: cross-file code analysis using xref
       run: rebar3 xref
-
-  
+    - name: generate docs
+      run: rebar3 edoc
