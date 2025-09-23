@@ -38,6 +38,7 @@ rebar3 dialyzer
 
 * cross file analyse using [xref]:
 ```sh
+rebar3 xref
 ```
 
 * compile
