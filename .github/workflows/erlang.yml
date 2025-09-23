@@ -24,8 +24,11 @@ jobs:
       run: rebar3 compile
     - name: run unit tests
       run: rebar3 eunit
-    - name: code analysis using Dialyzer
-      run: rebar3 dialyzer
     - name: run property tests
       run: rebar3 proper
+    - name: code analysis using Dialyzer
+      run: rebar3 dialyzer
+    - name: cross-file code analysis using xref
+      run: rebar3 xref
+
   
