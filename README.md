@@ -41,6 +41,12 @@ rebar3 dialyzer
 rebar3 xref
 ```
 
+* generate documentation ([EDoc])
+
+```shell
+rebar3 compile
+```
+
 * compile
 
 ```shell
@@ -67,6 +73,7 @@ nix-shell -p erlang_28
 [xref]: https://www.erlang.org/doc/apps/tools/xref_chapter.html
 [Dialyzer]: https://www.erlang.org/doc/apps/dialyzer/dialyzer_chapter.html
 [EUnit]: https://www.erlang.org/doc/apps/eunit/chapter.html
+[EDoc]: https://www.erlang.org/doc/apps/edoc/chapter.html
 [Nix]: https://book.divnix.com/
 
 [Erlang CI]: https://github.com/dancewithheart/erl_algo/actions/workflows/erlang.yml/badge.svg?branch=main
