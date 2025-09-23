@@ -10,21 +10,25 @@
     forall/2,
     elements/1, from_list/1, 
     is_bst/1, equal/2]).
+-export_type([emptyBst/0, bstNode/2, bst/2, predicate/2]).
 -record(tree, {left, key, value, right}).
 
--type bst(K, V) :: empty | #tree{
+-type emptyBst() :: empty.
+-type bstNode(K,V) :: #tree{
     left :: bst(K, V),
     key :: K,
     value :: V,
     right :: bst(K, V)}.
+-type bst(K, V) :: emptyBst() | bstNode(K,V).
+-type predicate(K,V) :: fun((K,V) -> boolean()).
 
--spec empty() -> bst(_K,_V).
+-spec empty() -> emptyBst().
 empty() -> empty.
 
--spec new(bst(K,V), K, V, bst(K,V)) -> bst(K,V).
+-spec new(bst(K,V), K, V, bst(K,V)) -> bstNode(K,V).
 new(L,K,V,R) -> #tree{left = L, key = K, value = V, right = R}.
 
--spec new(K,V) -> bst(K,V).
+-spec new(K,V) -> bstNode(K,V).
 new(Key, Value) -> new(empty(), Key, Value, empty()).
 
 % check if K is bound in BST
@@ -41,7 +45,7 @@ lookup(D, K, #tree{left = L, key = K2}) when K < K2 -> lookup(D,K,L);
 lookup(D, K, #tree{key = K2, right = R}) when K > K2 -> lookup(D,K,R);
 lookup(_, _, #tree{value = V}) -> V.
 
--spec insert(V, K, bst(K,V)) -> bst(K,V).
+-spec insert(V, K, bst(K,V)) -> bstNode(K,V).
 insert(K, V, empty) -> new(K,V);
 insert(K, V, #tree{left = L, key = K2, value = V2, right = R}) when K < K2
   -> new(insert(K, V, L), K2, V2, R);
@@ -59,8 +63,7 @@ equal( #tree{left = L, key = K, value = V, right = R},
   -> equal(L,L2) andalso equal(R,R2);
 equal(_, _) -> false.
 
-% forall(P: fun(K,V) -> bool(), t: tree()) -> bool()
--spec forall(any(), bst(_K,_V)) -> boolean().
+-spec forall(predicate(K,V), bst(K,V)) -> boolean().
 forall(_, empty) -> true;
 forall(P, #tree{left = L, key = K, value = V, right = R}) ->
   P(K,V) andalso forall(P, L) andalso forall(P, R).
