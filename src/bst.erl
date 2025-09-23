@@ -22,29 +22,33 @@
 -type bst(K, V) :: emptyBst() | bstNode(K,V).
 -type predicate(K,V) :: fun((K,V) -> boolean()).
 
+%% @doc create empty BST
 -spec empty() -> emptyBst().
 empty() -> empty.
 
+%% @TODO hide / drop this
 -spec new(bst(K,V), K, V, bst(K,V)) -> bstNode(K,V).
 new(L,K,V,R) -> #tree{left = L, key = K, value = V, right = R}.
 
+%% @doc create new BST with K := V
 -spec new(K,V) -> bstNode(K,V).
 new(Key, Value) -> new(empty(), Key, Value, empty()).
 
-% check if K is bound in BST
+%% @doc check if K is bound in BST
 -spec bound(K, bst(K,_V)) -> boolean().
 bound(_, empty) -> false;
 bound(K, #tree{left = L, key = K2}) when K < K2 -> bound(K, L);
 bound(K, #tree{key = K2, right = R}) when K > K2 -> bound(K, R);
 bound(_,_) -> true.
 
-% value bound to K in tree, or default value D
+%% @doc get value bound to K in tree, or default value D
 -spec lookup(V, K, bst(K,V)) -> V.
 lookup(D, _K, empty) -> D;
 lookup(D, K, #tree{left = L, key = K2}) when K < K2 -> lookup(D,K,L);
 lookup(D, K, #tree{key = K2, right = R}) when K > K2 -> lookup(D,K,R);
 lookup(_, _, #tree{value = V}) -> V.
 
+%% @doc insert key := value into the BST
 -spec insert(V, K, bst(K,V)) -> bstNode(K,V).
 insert(K, V, empty) -> new(K,V);
 insert(K, V, #tree{left = L, key = K2, value = V2, right = R}) when K < K2
@@ -54,6 +58,7 @@ insert(K, V, #tree{left = L, key = K2, value = V2, right = R}) when K > K2
 insert(K, V, #tree{left = L, key = _K2, value = _V2, right = R})
   -> new(L, K, V, R).
 
+%% @doc check if two BST are equal
 -spec equal(bst(K,V), bst(K,V)) -> boolean().
 equal(empty, empty) -> true;
 equal(#tree{}, empty) -> false;
@@ -63,12 +68,13 @@ equal( #tree{left = L, key = K, value = V, right = R},
   -> equal(L,L2) andalso equal(R,R2);
 equal(_, _) -> false.
 
+%% @doc check if predicate P(K,V) is true for every pair in BST
 -spec forall(predicate(K,V), bst(K,V)) -> boolean().
 forall(_, empty) -> true;
 forall(P, #tree{left = L, key = K, value = V, right = R}) ->
   P(K,V) andalso forall(P, L) andalso forall(P, R).
 
-% check if #tree is proper BST
+%% @doc check if argument is BST
 -spec is_bst(bst(_K,_V)) -> boolean().
 is_bst(empty) -> true;
 is_bst(#tree{left = L, key = K, right = R}) ->
@@ -76,7 +82,7 @@ is_bst(#tree{left = L, key = K, right = R}) ->
     andalso forall(fun(K2,_) -> K2 > K end, R)
     andalso is_bst(L) andalso is_bst(R).
 
-% converts BST to association list - in order travrsal
+%% @doc converts BST to association list - in order travrsal
 -spec elements(bst(K,V)) -> [{K,V}].
 elements(T) -> elements(T, []).
 
