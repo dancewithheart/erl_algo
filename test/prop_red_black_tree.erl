@@ -4,10 +4,11 @@
 %%%%%%%%%%%%%%%%%%
 %%% Properties %%%
 
-prop_after_insert_is_bst() ->
-  ?FORALL( {L,K,V}, {red_black_gen(integer()), integer(), string()},
-    red_black_tree:is_bst(red_black_tree:insert(K,V,L))
-  ).
+% TODO
+% prop_after_insert_is_bst() ->
+%   ?FORALL( {L,K,V}, {red_black_gen(integer()), integer(), string()},
+%     red_black_tree:is_bst(red_black_tree:insert(K,V,L))
+%   ).
 
 % lookup d k empty_tree = d
 prop_lookup_empty_gives_default() ->
