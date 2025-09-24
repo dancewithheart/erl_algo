@@ -5,7 +5,7 @@
 %% https://softwarefoundations.cis.upenn.edu/vfa-current/SearchTree.html
 -module(bst).
 -export([
-    empty/0, new/2, new/4,
+    empty/0, new/2,
     bound/2, lookup/3, insert/3,
     forall/2,
     elements/1, from_list/1, 
@@ -26,7 +26,6 @@
 -spec empty() -> emptyBst().
 empty() -> empty.
 
-%% @TODO hide / drop this
 -spec new(bst(K,V), K, V, bst(K,V)) -> bstNode(K,V).
 new(L,K,V,R) -> #tree{left = L, key = K, value = V, right = R}.
 
@@ -94,7 +93,7 @@ elements(empty, Acc) -> Acc;
 elements(#tree{left = L, key = K, value = V, right = R}, Acc) ->
     elements(L, [{K,V} | elements(R, Acc)]).
 
-% converts list to BST
+%% @doc converts list to BST
 -spec from_list([{K,V}]) -> bst(K,V).
 from_list([]) -> empty();
 from_list(XS) -> lists:foldl(fun insert/2, empty(), XS).

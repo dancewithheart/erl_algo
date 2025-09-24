@@ -5,10 +5,10 @@
 
 tree_test_() ->
   BST =
-    bst:new(
-      bst:new(bst:empty(), 2, "two", bst:empty()),
+    unsafe_tree(
+      bst:new(2, "two"),
       4, "four",
-      bst:new(bst:empty(), 5, "five", bst:empty())),
+      bst:new(5, "five")),
     [test_insert(BST),
       test_lookup_key_in_left_subtree(BST),
       test_lookup_key_in_right_subtree(BST),
@@ -19,7 +19,7 @@ tree_test_() ->
       test_elements_create_assoc_list(BST)].
 
 test_insert(BST) ->
-  ?_assertEqual(bst:insert(5, "five", (bst:insert(2,"two",(bst:insert(4,"four", bst:empty()))))), BST).
+  ?_assertEqual(bst:insert(5, "five", (bst:insert(2,"two",(bst:new(4,"four"))))), BST).
 test_lookup_key_in_right_subtree(BST) ->
   ?_assertEqual("five", bst:lookup("", 5, BST)).
 test_lookup_key_in_left_subtree(BST) ->
@@ -32,11 +32,13 @@ test_is_bst_holds_for_valid_bst(BST) ->
   ?_assertEqual(true, bst:is_bst(BST)).
 test_is_bst_detect_invalid_bst() ->
   ?_assertEqual(false,
-    bst:is_bst(bst:new(
-      bst:new(bst:empty(), 5, "five", bst:empty()),
+    bst:is_bst(unsafe_tree(
+      bst:new(5, "five"),
       4, "four",
-      bst:new(bst:empty(), 2, "two", bst:empty())
+      bst:new(2, "two")
     ))
 ).
 test_elements_create_assoc_list(BST) ->
   ?_assertEqual([{2, "two"}, {4, "four"}, {5, "five"}], bst:elements(BST)).
+
+unsafe_tree(L,K,V,R) -> {tree, L, K, V, R}.
