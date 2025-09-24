@@ -5,7 +5,7 @@
 %% https://softwarefoundations.cis.upenn.edu/vfa-current/SearchTree.html
 -module(bst).
 -export([
-    empty/0, new/2, new/4,
+    empty/0, new/2,
     bound/2, lookup/3, insert/3,
     forall/2,
     elements/1, from_list/1, 
@@ -26,7 +26,6 @@
 -spec empty() -> emptyBst().
 empty() -> empty.
 
-%% @TODO hide / drop this
 -spec new(bst(K,V), K, V, bst(K,V)) -> bstNode(K,V).
 new(L,K,V,R) -> #tree{left = L, key = K, value = V, right = R}.
 
@@ -47,6 +46,10 @@ lookup(D, _K, empty) -> D;
 lookup(D, K, #tree{left = L, key = K2}) when K < K2 -> lookup(D,K,L);
 lookup(D, K, #tree{key = K2, right = R}) when K > K2 -> lookup(D,K,R);
 lookup(_, _, #tree{value = V}) -> V.
+
+%% @doc insert key := value into the BST
+-spec insert({V, K}, bst(K,V)) -> bstNode(K,V).
+insert({K, V}, T) -> insert(K,V, T).
 
 %% @doc insert key := value into the BST
 -spec insert(V, K, bst(K,V)) -> bstNode(K,V).
@@ -90,11 +93,10 @@ elements(empty, Acc) -> Acc;
 elements(#tree{left = L, key = K, value = V, right = R}, Acc) ->
     elements(L, [{K,V} | elements(R, Acc)]).
 
-% converts list to BST
+%% @doc converts list to BST
 -spec from_list([{K,V}]) -> bst(K,V).
-from_list([]) -> bst:empty();
-from_list(XS) ->
-  lists:foldl(fun({K, V}, Acc) -> bst:insert(K, V, Acc) end, bst:empty(), XS).
+from_list([]) -> empty();
+from_list(XS) -> lists:foldl(fun insert/2, empty(), XS).
 
 % TODO merge two BST
 % TODO concat two BST
