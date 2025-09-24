@@ -2,13 +2,17 @@
 
 # Why
 
-Experiments with data structures and algorithms implemented in FP language - Erlang.
+Experiments with data structures and algorithms implemented in FP using Erlang.
 
 I am exploring how development focusing on the correctness and reliability looks like, based on my experience in Scala, Haskell and formal verification in Agda and Rocq:
 * property tests, inspired by formal verification e.g. https://softwarefoundations.cis.upenn.edu/vfa-current/index.html
 * use spec/types
 * use of static code analysis
 * unit tests
+
+# What
+* binary search trees [src/bst.erl](./src/bst.erl), [test/prop_bst.erl](./test/prop_bst.erl)
+* red black trees [red_black_tree.erl](./src/red_black_tree.erl), [test/prop_red_black_tree.erl](./test/prop_red_black_tree.erl)
 
 ## How [Rebar3]
 
