@@ -49,6 +49,10 @@ lookup(D, K, #tree{key = K2, right = R}) when K > K2 -> lookup(D,K,R);
 lookup(_, _, #tree{value = V}) -> V.
 
 %% @doc insert key := value into the BST
+-spec insert({V, K}, bst(K,V)) -> bstNode(K,V).
+insert({K, V}, T) -> insert(K,V, T).
+
+%% @doc insert key := value into the BST
 -spec insert(V, K, bst(K,V)) -> bstNode(K,V).
 insert(K, V, empty) -> new(K,V);
 insert(K, V, #tree{left = L, key = K2, value = V2, right = R}) when K < K2
@@ -92,9 +96,8 @@ elements(#tree{left = L, key = K, value = V, right = R}, Acc) ->
 
 % converts list to BST
 -spec from_list([{K,V}]) -> bst(K,V).
-from_list([]) -> bst:empty();
-from_list(XS) ->
-  lists:foldl(fun({K, V}, Acc) -> bst:insert(K, V, Acc) end, bst:empty(), XS).
+from_list([]) -> empty();
+from_list(XS) -> lists:foldl(fun insert/2, empty(), XS).
 
 % TODO merge two BST
 % TODO concat two BST
