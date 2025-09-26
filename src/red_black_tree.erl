@@ -102,21 +102,34 @@ forall(_, empty) -> true;
 forall(P, #rbTree{color=_C, left=L, key=K, value=V, right=R}) ->
   P(K,V) andalso forall(P, L) andalso forall(P, R).
 
-%% @doc if tree is proper Red Black Tree
+%% @doc true if this is Red Black Tree
+%% Red Black Tree have to maintain invariant
+%% * Root is black.
+%% * No red node has a red child.
+%% * TODO Every path from the root to a leaf has the same number of black nodes.
 -spec is_red_black(redblacktree(_K,_V)) -> boolean().
-is_red_black(empty) -> true;
-is_red_black(#rbTree{left=empty, right=empty}) -> true;
-is_red_black(#rbTree{color=_C, left=_L, key=_K, value=_V, right=_R}) ->
-  false. %% TODO
+is_red_black(L) ->
+  root_is_black(L) andalso
+  red_has_no_red_child(L) andalso
+  is_bst(L).
+
+root_is_black(#rbTree{color=red}) -> false;
+root_is_black(_) -> true.
+
+red_has_no_red_child(#rbTree{color=red, left=L}) when L#rbTree.color == red -> false;
+red_has_no_red_child(#rbTree{color=red, right=R}) when R#rbTree.color == red -> false;
+red_has_no_red_child(empty) -> true;
+red_has_no_red_child(#rbTree{left=L, right=R}) ->
+  red_has_no_red_child(L) andalso red_has_no_red_child(R).
 
 %% @doc if tree is proper Red Black Tree
 -spec is_bst(redblacktree(_K,_V)) -> boolean().
 is_bst(empty) -> true;
-is_bst(#rbTree{color=_C, left=L, key=K, value=_V, right=R}) ->
-    forall(fun(K2,_) -> abs(K2) < abs(K) end, L)
-    andalso forall(fun(K2,_) -> abs(K2) > abs(K) end, R)
-    andalso is_bst(L)
-    andalso is_bst(R).
+is_bst(#rbTree{left=L, key=K, right=R}) ->
+  forall(fun(K2,_) -> K2 < K end, L) andalso
+  forall(fun(K2,_) -> K2 > K end, R) andalso
+  is_bst(L) andalso
+  is_bst(R).
 
 %% @doc converts list to Red Black Tree
 -spec from_list(list({K,V})) -> redblacktree(K,V).
