@@ -84,6 +84,16 @@ prop_sorted_no_dups_list_is_elements_compose_from_list() ->
     bst:elements(bst:from_list(addStrValues(L))) == addStrValues(lists:sort(L))
   ).
 
+% from_list(X ++ Y) == merge(from_list(X), from_list(Y))
+prop_merge_like_list_concat() ->
+  ?FORALL({X,Y}, {list(integer()), list(integer())},
+    begin
+      Y2 = addStrValues(Y),
+      X2 = addStrValues(X),
+      bst:from_list(X2 ++ Y2) == bst:merge(bst:from_list(X2), bst:from_list(Y2))
+    end
+  ).
+
 %%%%%%%%%%%%%%%%%%
 %%% Generators %%%
 

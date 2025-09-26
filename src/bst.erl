@@ -8,6 +8,7 @@
     empty/0, new/2,
     is_key/2, get/3, put/3,
     all/2,
+    merge/2,
     elements/1, from_list/1, 
     is_bst/1, equal/2]).
 -export_type([emptyBst/0, bstNode/2, bst/2, predicate/2]).
@@ -97,6 +98,19 @@ elements(#tree{left = L, key = K, value = V, right = R}, Acc) ->
 -spec from_list([{K,V}]) -> bst(K,V).
 from_list([]) -> empty();
 from_list(XS) -> lists:foldl(fun put/2, empty(), XS).
+
+%% @doc combine two BST into single BST
+-spec merge(bst(K,V), bst(K,V)) -> bst(K,V).
+merge(X, empty) -> X;
+merge(empty, X) -> X;
+merge(#tree{left = L1, key = K1, value = V1, right = R1}, #tree{left = L2, key = K2, value = V2, right = R2}) when K1 < K2 ->
+  N = new(L1, K1, V1, merge(put(K2, V2, R1), R2)),
+  merge(N, L2);
+merge(#tree{left = L1, key = K1, value = _V1, right = R1}, #tree{left = L2, key = K2, value = V2, right = R2}) when K1 == K2
+  -> new(merge(L1,L2), K1, V2, merge(R1,R2));
+merge(#tree{left = L1, key = K1, value = V1, right = R1}, #tree{left = L2, key = K2, value = V2, right = R2}) when K1 > K2 ->
+  N = new(merge(put(K2, V2, L1),L2), K1, V1, R1),
+  merge(N, R2).
 
 % TODO delete from BST -> filter
 
