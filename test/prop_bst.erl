@@ -78,11 +78,20 @@ prop_lookup_not_default_then_bound() ->
     end
   ).
 
+% L has no duplicates => elements(from_list(L)) = sort(L)
+prop_sorted_no_dups_list_is_elements_compose_from_list() ->
+  ?FORALL(L, list_no_duplicates(integer()),
+    bst:elements(bst:from_list(addStrValues(L))) == addStrValues(lists:sort(L))
+  ).
+
 %%%%%%%%%%%%%%%%%%
 %%% Generators %%%
 
 bst_gen(Gen) ->
     ?LET(L, list(Gen), list_to_bst(L)).
+
+list_no_duplicates(T) ->
+    ?LET(L, list(T), remove_duplicates(L)).
 
 %%%%%%%%%%%%%%%
 %%% Helpers %%%
@@ -91,4 +100,11 @@ list_to_bst([]) -> bst:empty();
 list_to_bst(L) -> bst:from_list(addStrValues(L)).
 
 addStrValues(L) -> lists:map(fun(E) -> {E, integer_to_list(E)} end, L).
+
+remove_duplicates([]) -> [];
+remove_duplicates([H|T]) ->
+  case lists:member(H,T) of
+    true -> remove_duplicates(T);
+    false -> [H|remove_duplicates(T)]
+  end.
 
