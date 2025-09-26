@@ -7,7 +7,7 @@
 -export([
     empty/0, new/2,
     is_key/2, get/3, put/3,
-    all/2,
+    all/2, any/2,
     mapVal/2,
     merge/2,
     elements/1, from_list/1, 
@@ -78,6 +78,12 @@ equal(_, _) -> false.
 all(_, empty) -> true;
 all(P, #tree{left = L, key = K, value = V, right = R}) ->
   P(K,V) andalso all(P, L) andalso all(P, R).
+
+%% @doc check if predicate P(K,V) is true for any pair in BST
+-spec any(predicate(K,V), bst(K,V)) -> boolean().
+any(_, empty) -> false;
+any(P, #tree{left = L, key = K, value = V, right = R}) ->
+  P(K,V) orelse any(P, L) orelse any(P, R).
 
 %% @doc check if argument is BST
 -spec is_bst(bst(_K,_V)) -> boolean().
