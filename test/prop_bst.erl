@@ -6,74 +6,74 @@
 %%%%%%%%%%%%%%%%%%
 %%% Properties %%%
 
-% properties for lookup and insert
+% properties for get and put
 
-% is_bst(t) => is_bst(insert(k,v,t))
-prop_bst_after_insert_is_bst() ->
+% is_bst(t) => is_bst(put(k,v,t))
+prop_bst_after_put_is_bst() ->
   ?FORALL( {L,K,V}, {bst_gen(integer()), integer(), string()},
-    bst:is_bst(bst:insert(K,V,L))
+    bst:is_bst(bst:put(K,V,L))
   ).
 
-% lookup d k empty_tree = d
-prop_lookup_empty_bst_gives_default() ->
+% get d k empty_tree = d
+prop_get_empty_bst_gives_default() ->
   ?FORALL( {D,K}, {string(), integer()},
-    bst:lookup(D, K, bst:empty()) == D
+    bst:get(D, K, bst:empty()) == D
   ).
 
-% lookup d k (insert k v t) = v
-prop_lookup_inserted_gives_inserted_elem() ->
+% get d k (put k v t) = v
+prop_get_puted_gives_puted_elem() ->
   ?FORALL( {L,D,V,K}, {bst_gen(integer()),string(),string(), integer()},
-    bst:lookup(D, K, bst:insert(K,V,L)) == V
+    bst:get(D, K, bst:put(K,V,L)) == V
   ).
 
-% if k ≠ k' => lookup d k' (insert k v t) = lookup d k' t  
+% if k ≠ k' => get d k' (put k v t) = get d k' t  
 
-prop_insert_different_key_not_affect_lookup() ->
+prop_put_different_key_not_affect_get() ->
   ?FORALL( {L,D,V,K,K2},
     {bst_gen(integer()), string(), string(), integer(), integer()},
     ?IMPLIES( K =/= K2,
-      bst:lookup(D, K2, bst:insert(K,V,L)) == bst:lookup(D,K2,L)
+      bst:get(D, K2, bst:put(K,V,L)) == bst:get(D,K2,L)
     )).
 
-% properties for bound and insert
+% properties for is_key and put
 
-% bound k empty_tree = false
-prop_bound_empty_bst_gives_default() ->
+% is_key k empty_tree = false
+prop_is_key_empty_bst_gives_default() ->
   ?FORALL( K, integer(),
-    bst:bound(K, bst:empty()) == false
+    bst:is_key(K, bst:empty()) == false
   ).
 
-% bound k (insert k v t) = true
-prop_bound_inserted_gives_inserted_elem() ->
+% is_key k (put k v t) = true
+prop_is_key_puted_gives_puted_elem() ->
   ?FORALL( {L,V,K}, {bst_gen(integer()),string(), integer()},
-    bst:bound(K, bst:insert(K,V,L)) == true
+    bst:is_key(K, bst:put(K,V,L)) == true
   ).
 
-% if k ≠ k' => bound k' (insert k v t) = bound k' t  
+% if k ≠ k' => is_key k' (put k v t) = is_key k' t  
 
-prop_insert_different_key_not_affect_bound() ->
+prop_put_different_key_not_affect_is_key() ->
   ?FORALL( {L,V,K,K2},
     {bst_gen(integer()), string(), integer(), integer()},
     ?IMPLIES( K =/= K2,
-      bst:bound(K2, bst:insert(K,V,L)) == bst:bound(K2,L)
+      bst:is_key(K2, bst:put(K,V,L)) == bst:is_key(K2,L)
     )).
 
-% properties for bound and lookup
+% properties for is_key and get
 
-% bound k t == false => lookup d k t == d
-prop_if_not_bound_then_lookup_default() ->
+% is_key k t == false => get d k t == d
+prop_if_not_is_key_then_get_default() ->
   ?FORALL( {T,D,K}, {bst_gen(integer()), string(), integer()},
-    case bst:bound(K, T) of
-      false -> bst:lookup(D, K, T) == D;
+    case bst:is_key(K, T) of
+      false -> bst:get(D, K, T) == D;
       true -> true
     end
   ).
 
-% (lookup d k t /= d) => bound k t
-prop_lookup_not_default_then_bound() ->
+% (get d k t /= d) => is_key k t
+prop_get_not_default_then_is_key() ->
   ?FORALL( {T,D,K}, {bst_gen(integer()), string(), integer()},
-    case bst:lookup(D, K, T) /= D of
-      true -> bst:bound(K, T);
+    case bst:get(D, K, T) /= D of
+      true -> bst:is_key(K, T);
       false -> true
     end
   ).
@@ -107,4 +107,3 @@ remove_duplicates([H|T]) ->
     true -> remove_duplicates(T);
     false -> [H|remove_duplicates(T)]
   end.
-

@@ -6,8 +6,8 @@
 -module(bst).
 -export([
     empty/0, new/2,
-    bound/2, lookup/3, insert/3,
-    forall/2,
+    is_key/2, get/3, put/3,
+    all/2,
     elements/1, from_list/1, 
     is_bst/1, equal/2]).
 -export_type([emptyBst/0, bstNode/2, bst/2, predicate/2]).
@@ -34,31 +34,31 @@ new(L,K,V,R) -> #tree{left = L, key = K, value = V, right = R}.
 new(Key, Value) -> new(empty(), Key, Value, empty()).
 
 %% @doc check if K is bound in BST
--spec bound(K, bst(K,_V)) -> boolean().
-bound(_, empty) -> false;
-bound(K, #tree{left = L, key = K2}) when K < K2 -> bound(K, L);
-bound(K, #tree{key = K2, right = R}) when K > K2 -> bound(K, R);
-bound(_,_) -> true.
+-spec is_key(K, bst(K,_V)) -> boolean().
+is_key(_, empty) -> false;
+is_key(K, #tree{left = L, key = K2}) when K < K2 -> is_key(K, L);
+is_key(K, #tree{key = K2, right = R}) when K > K2 -> is_key(K, R);
+is_key(_,_) -> true.
 
 %% @doc get value bound to K in tree, or default value D
--spec lookup(V, K, bst(K,V)) -> V.
-lookup(D, _K, empty) -> D;
-lookup(D, K, #tree{left = L, key = K2}) when K < K2 -> lookup(D,K,L);
-lookup(D, K, #tree{key = K2, right = R}) when K > K2 -> lookup(D,K,R);
-lookup(_, _, #tree{value = V}) -> V.
+-spec get(V, K, bst(K,V)) -> V.
+get(D, _K, empty) -> D;
+get(D, K, #tree{left = L, key = K2}) when K < K2 -> get(D,K,L);
+get(D, K, #tree{key = K2, right = R}) when K > K2 -> get(D,K,R);
+get(_, _, #tree{value = V}) -> V.
 
 %% @doc insert key := value into the BST
--spec insert({V, K}, bst(K,V)) -> bstNode(K,V).
-insert({K, V}, T) -> insert(K,V, T).
+-spec put({K, V}, bst(K,V)) -> bstNode(K,V).
+put({K, V}, T) -> put(K,V,T).
 
 %% @doc insert key := value into the BST
--spec insert(V, K, bst(K,V)) -> bstNode(K,V).
-insert(K, V, empty) -> new(K,V);
-insert(K, V, #tree{left = L, key = K2, value = V2, right = R}) when K < K2
-  -> new(insert(K, V, L), K2, V2, R);
-insert(K, V, #tree{left = L, key = K2, value = V2, right = R}) when K > K2
-  -> new(L, K2, V2, insert(K, V, R));
-insert(K, V, #tree{left = L, key = _K2, value = _V2, right = R})
+-spec put(K, V, bst(K,V)) -> bstNode(K,V).
+put(K, V, empty) -> new(K,V);
+put(K, V, #tree{left = L, key = K2, value = V2, right = R}) when K < K2
+  -> new(put(K, V, L), K2, V2, R);
+put(K, V, #tree{left = L, key = K2, value = V2, right = R}) when K > K2
+  -> new(L, K2, V2, put(K, V, R));
+put(K, V, #tree{left = L, key = _K2, value = _V2, right = R})
   -> new(L, K, V, R).
 
 %% @doc check if two BST are equal
@@ -72,17 +72,17 @@ equal( #tree{left = L, key = K, value = V, right = R},
 equal(_, _) -> false.
 
 %% @doc check if predicate P(K,V) is true for every pair in BST
--spec forall(predicate(K,V), bst(K,V)) -> boolean().
-forall(_, empty) -> true;
-forall(P, #tree{left = L, key = K, value = V, right = R}) ->
-  P(K,V) andalso forall(P, L) andalso forall(P, R).
+-spec all(predicate(K,V), bst(K,V)) -> boolean().
+all(_, empty) -> true;
+all(P, #tree{left = L, key = K, value = V, right = R}) ->
+  P(K,V) andalso all(P, L) andalso all(P, R).
 
 %% @doc check if argument is BST
 -spec is_bst(bst(_K,_V)) -> boolean().
 is_bst(empty) -> true;
 is_bst(#tree{left = L, key = K, right = R}) ->
-    forall(fun(K2,_) -> K2 < K end, L)
-    andalso forall(fun(K2,_) -> K2 > K end, R)
+    all(fun(K2,_) -> K2 < K end, L)
+    andalso all(fun(K2,_) -> K2 > K end, R)
     andalso is_bst(L) andalso is_bst(R).
 
 %% @doc converts BST to association list - in order travrsal
@@ -96,14 +96,9 @@ elements(#tree{left = L, key = K, value = V, right = R}, Acc) ->
 %% @doc converts list to BST
 -spec from_list([{K,V}]) -> bst(K,V).
 from_list([]) -> empty();
-from_list(XS) -> lists:foldl(fun insert/2, empty(), XS).
-
-% TODO merge two BST
-% TODO concat two BST
+from_list(XS) -> lists:foldl(fun put/2, empty(), XS).
 
 % TODO delete from BST -> filter
 
 % TODO other traversals e.g. in order
 % TODO folds -> based on traversals
-
-% TODO map over values
