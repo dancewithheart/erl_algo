@@ -84,6 +84,27 @@ prop_sorted_no_dups_list_is_elements_compose_from_list() ->
     bst:elements(bst:from_list(addStrValues(L))) == addStrValues(lists:sort(L))
   ).
 
+
+% map(id, T) == T
+prop_map_id_is_noop() ->
+  ?FORALL(T, bst_gen(integer()),
+    bst:mapVal(fun id/1, T) == T
+  ).
+
+id(A) -> A.
+
+% from_list(map(F, L) == mapVal(F, from_list(F))
+prop_map_f_from_list_is_from_list_map() ->
+  ?FORALL(L, list(integer()),
+    begin
+      L2 = addStrValues(L),
+      bst:from_list(lists:map(fun foo2/1, L2)) == bst:mapVal(fun foo/1, bst:from_list(L2))
+    end
+  ).
+
+foo2({A,B}) -> {A, foo(B)}.
+foo(B) -> string:reverse(B) ++ "foo".
+
 % from_list(X ++ Y) == merge(from_list(X), from_list(Y))
 prop_merge_like_list_concat() ->
   ?FORALL({X,Y}, {list(integer()), list(integer())},
