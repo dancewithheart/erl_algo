@@ -6,7 +6,7 @@
 -module(red_black_tree).
 -export([get/3, put/2, put/3,
     is_empty/1, is_leaf/1, is_key/2,
-    forall/2,
+    all/2,
     is_red_black/1, is_bst/1,
     from_list/1, elements/1]).
 -export([empty/0]).
@@ -97,10 +97,10 @@ balance(black, T1, K, VK, #rbTree{color=red, left=B, key=Y, value=VY, right=#rbT
 balance(black,T1,K,VK,T2) -> black(T1, K, VK, T2).
 
 %% @doc check if predicate P(K,V) is true for every pair in Red Black Tree
--spec forall(fun((K,V) -> boolean()), redblacktree(K,V)) -> boolean().
-forall(_, empty) -> true;
-forall(P, #rbTree{color=_C, left=L, key=K, value=V, right=R}) ->
-  P(K,V) andalso forall(P, L) andalso forall(P, R).
+-spec all(fun((K,V) -> boolean()), redblacktree(K,V)) -> boolean().
+all(_, empty) -> true;
+all(P, #rbTree{color=_C, left=L, key=K, value=V, right=R}) ->
+  P(K,V) andalso all(P, L) andalso all(P, R).
 
 %% @doc true if this is Red Black Tree
 %% Red Black Tree have to maintain invariant
