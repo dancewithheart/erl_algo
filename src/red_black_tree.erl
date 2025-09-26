@@ -2,9 +2,10 @@
 %% Software Foundations, Volume 3, Verified Functional Algorithms
 %% Andrew W. Appel
 %% https://softwarefoundations.cis.upenn.edu/vfa-current/Redblack.html
+%% Red Black Tree is self-balancing binary search tree, each node has color
 -module(red_black_tree).
 -export([lookup/3, insert/2, insert/3,
-    is_empty/1, is_leaf/1,
+    is_empty/1, is_leaf/1, bound/2,
     forall/2,
     is_red_black/1, is_bst/1,
     from_list/1, elements/1]).
@@ -38,6 +39,13 @@ node(C,L,K,V,R) -> #rbTree{color=C, left=L, key=K, value=V, right=R}.
 red(L,K,V,R) -> node(red,L,K,V,R).
 black(L,K,V,R) -> node(black,L,K,V,R).
 
+%% @doc check if given key K exists in Red Black Tree
+-spec bound(K, redblacktree(K,_V)) -> boolean().
+bound(_, empty) -> false;
+bound(X, #rbTree{left=L, key=K}) when X < K -> bound(X,L);
+bound(X, #rbTree{key=K, right=R}) when X > K -> bound(X,R);
+bound(_, _) -> true.
+
 %% @doc get value bound to K in Red Black Tree, or default value D
 -spec lookup(V, K, redblacktree(K,V)) -> V.
 lookup(D, _X, empty) -> D;
@@ -58,13 +66,13 @@ insert(X,VX,T) ->
 make_black(T) -> T#rbTree{color=black}.
 
 -spec ins(K, V, redblacktree(K,V)) -> redBlackNode(K,V).
-ins(X,VX,empty) -> #rbTree{color=red, left=empty, key=X, value=VX, right=empty};
+ins(X,VX,empty) -> red(empty, X, VX, empty);
 ins(X,VX,#rbTree{color=C, left=A, key=Y, value=VY, right=B}) when X < Y ->
   balance(C, ins(X,VX,A), Y,VY,B);
 ins(X,VX,#rbTree{color=C, left=A, key=Y, value=VY, right=B}) when X > Y ->
   balance(C,A,Y,VY, ins(X,VX,B));
-ins(X,VX,#rbTree{color=C, left=A, key=_Y, value=_VY, right=B}) ->
-  #rbTree{color=C, left=A, key=X, value=VX, right=B}.
+ins(X,VX,#rbTree{color=C, left=A, key=Y, value=_VY, right=B}) when X == Y ->
+  node(C, A, X, VX, B).
 
 balance(red, T1, K, VK, T2) -> red(T1, K, VK, T2);
 balance(black,
@@ -94,21 +102,34 @@ forall(_, empty) -> true;
 forall(P, #rbTree{color=_C, left=L, key=K, value=V, right=R}) ->
   P(K,V) andalso forall(P, L) andalso forall(P, R).
 
-%% @doc if tree is proper Red Black Tree
+%% @doc true if this is Red Black Tree
+%% Red Black Tree have to maintain invariant
+%% * Root is black.
+%% * No red node has a red child.
+%% * TODO Every path from the root to a leaf has the same number of black nodes.
 -spec is_red_black(redblacktree(_K,_V)) -> boolean().
-is_red_black(empty) -> true;
-is_red_black(#rbTree{left=empty, right=empty}) -> true;
-is_red_black(#rbTree{color=_C, left=_L, key=_K, value=_V, right=_R}) ->
-  false. %% TODO
+is_red_black(L) ->
+  root_is_black(L) andalso
+  red_has_no_red_child(L) andalso
+  is_bst(L).
+
+root_is_black(#rbTree{color=red}) -> false;
+root_is_black(_) -> true.
+
+red_has_no_red_child(#rbTree{color=red, left=L}) when L#rbTree.color == red -> false;
+red_has_no_red_child(#rbTree{color=red, right=R}) when R#rbTree.color == red -> false;
+red_has_no_red_child(empty) -> true;
+red_has_no_red_child(#rbTree{left=L, right=R}) ->
+  red_has_no_red_child(L) andalso red_has_no_red_child(R).
 
 %% @doc if tree is proper Red Black Tree
 -spec is_bst(redblacktree(_K,_V)) -> boolean().
 is_bst(empty) -> true;
-is_bst(#rbTree{color=_C, left=L, key=K, value=_V, right=R}) ->
-    forall(fun(K2,_) -> abs(K2) < abs(K) end, L)
-    andalso forall(fun(K2,_) -> abs(K2) > abs(K) end, R)
-    andalso is_bst(L)
-    andalso is_bst(R).
+is_bst(#rbTree{left=L, key=K, right=R}) ->
+  forall(fun(K2,_) -> K2 < K end, L) andalso
+  forall(fun(K2,_) -> K2 > K end, R) andalso
+  is_bst(L) andalso
+  is_bst(R).
 
 %% @doc converts list to Red Black Tree
 -spec from_list(list({K,V})) -> redblacktree(K,V).

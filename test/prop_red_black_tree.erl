@@ -4,11 +4,15 @@
 %%%%%%%%%%%%%%%%%%
 %%% Properties %%%
 
-% TODO
-% prop_after_insert_is_bst() ->
-%   ?FORALL( {L,K,V}, {red_black_gen(integer()), integer(), string()},
-%     red_black_tree:is_bst(red_black_tree:insert(K,V,L))
-%   ).
+prop_after_insert_is_red_black() ->
+  ?FORALL( {L,V,K}, {red_black_gen(integer()), string(), integer()},
+    red_black_tree:is_red_black(red_black_tree:insert(K,V,L))
+  ).
+
+prop_after_insert_is_bst() ->
+  ?FORALL( {L,V,K}, {red_black_gen(integer()), string(), integer()},
+    red_black_tree:is_bst(red_black_tree:insert(K,V,L))
+  ).
 
 % lookup d k empty_tree = d
 prop_lookup_empty_gives_default() ->
@@ -31,10 +35,48 @@ prop_insert_different_key_not_affect_lookup() ->
       red_black_tree:lookup(D, K2, (red_black_tree:insert(K,V,L))) == red_black_tree:lookup(D,K2,L)
     )).
 
-% prop_red_black_tree_after_balance_is_bst() ->
-%   ?FORALL( {L,R,K,V,C}, {red_black_gen(integer()), red_black_gen(integer()), integer(), string(), color_gen()},
-%     red_black_tree:is_bst(red_black_tree:balance(C,L,K,V,R))
-%   ).
+% properties for bound and insert
+
+% bound k empty_tree = false
+prop_bound_empty_bst_gives_default() ->
+  ?FORALL( K, integer(),
+    red_black_tree:bound(K, red_black_tree:empty()) == false
+  ).
+
+% bound k (insert k v t) = true
+prop_bound_inserted_gives_inserted_elem() ->
+  ?FORALL( {L,V,K}, {red_black_gen(integer()),string(), integer()},
+    red_black_tree:bound(K, red_black_tree:insert(K,V,L)) == true
+  ).
+
+% if k ≠ k' => bound k' (insert k v t) = bound k' t  
+
+prop_insert_different_key_not_affect_bound() ->
+  ?FORALL( {L,V,K,K2},
+    {red_black_gen(integer()), string(), integer(), integer()},
+    ?IMPLIES( K =/= K2,
+      red_black_tree:bound(K2, red_black_tree:insert(K,V,L)) == red_black_tree:bound(K2,L)
+    )).
+
+% properties for bound and lookup
+
+% bound k t == false => lookup d k t == d
+prop_if_not_bound_then_lookup_default() ->
+  ?FORALL( {T,D,K}, {red_black_gen(integer()), string(), integer()},
+    case red_black_tree:bound(K, T) of
+      false -> red_black_tree:lookup(D, K, T) == D;
+      true -> true
+    end
+  ).
+
+% (lookup d k t /= d) => bound k t
+prop_lookup_not_default_then_bound() ->
+  ?FORALL( {T,D,K}, {red_black_gen(integer()), string(), integer()},
+    case red_black_tree:lookup(D, K, T) /= D of
+      true -> red_black_tree:bound(K, T);
+      false -> true
+    end
+  ).
 
 %%%%%%%%%%%%%%%%%%
 %%% Generators %%%
@@ -42,28 +84,10 @@ prop_insert_different_key_not_affect_lookup() ->
 red_black_gen(Gen) ->
   ?LET(L, list(Gen), list_to_red_black_tree(L)).
 
-% color_gen() ->
-%   ?LET(B, boolean(), bool_to_color(B)).
-
 %%%%%%%%%%%%%%%
 %%% Helpers %%%
-
-% bool_to_color(true) -> red;
-% bool_to_color(false) -> black.
 
 list_to_red_black_tree([]) -> red_black_tree:empty();
 list_to_red_black_tree(XS) ->
   YS = lists:map(fun(E) -> {E, integer_to_list(E)} end, XS),
   red_black_tree:from_list(YS).
-
-%% TODO balance preserves ForallT : ForallT P l → ForallT P r → P k v → ForallT P (balance c l k v r).
-% ins preserves BST : BST t → BST (ins k v t).
-
-% lookup spec
-% lookup d k empty_tree = d
-% lookup d k (insert k v t) = v
-% lookup d k' (insert k v t) = lookup d k' t       if k ≠ k'
-
-% red-black invariants hold:
-% Local Invariant: No red node has a red child.
-% Global Invariant: Every path from the root to a leaf has the same number of black nodes.
