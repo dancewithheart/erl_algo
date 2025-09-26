@@ -84,6 +84,20 @@ prop_sorted_no_dups_list_is_elements_compose_from_list() ->
     bst:elements(bst:from_list(addStrValues(L))) == addStrValues(lists:sort(L))
   ).
 
+% is_key (delete k (put k v t)) = false
+prop_is_key_delete_false() ->
+  ?FORALL( {T,K,V}, {bst_gen(integer()), integer(), string()},
+    begin
+      T2 = bst:put(K,V,T),
+      bst:is_key(K, bst:delete(K, T2)) == false
+    end
+  ).
+
+prop_delete_different_key_not_affect_is_key() ->
+  ?FORALL( {T,K,K2}, {bst_gen(integer()), integer(), integer()},
+    ?IMPLIES( K =/= K2,
+      bst:is_key(K, bst:delete(K2, T)) == bst:is_key(K, T)
+    )).
 
 % map(id, T) == T
 prop_map_id_is_noop() ->

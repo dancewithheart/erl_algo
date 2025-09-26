@@ -7,6 +7,7 @@
 -export([
     empty/0, new/2,
     is_key/2, get/3, put/3,
+    delete/2,
     all/2, any/2,
     mapVal/2,
     merge/2,
@@ -120,6 +121,10 @@ merge(#tree{left = L1, key = K1, value = V1, right = R1}, #tree{left = L2, key =
   merge(N, R2).
 
 % TODO delete from BST -> filter
+delete(_K, empty) -> empty;
+delete(K, #tree{left = L, key = X, right = R}) when K == X -> merge(L,R);
+delete(K, #tree{left = L, key = X, value = V, right = R}) when K < X -> new(delete(K, L), X, V, R);
+delete(K, #tree{left = L, key = X, value = V, right = R}) when K > X -> new(L, X, V, delete(K, R)).
 
 %% @doc map values of BST
 -spec mapVal(fun((A) -> B), bst(K,A)) -> bst(K,B).
@@ -127,5 +132,4 @@ mapVal(_, empty) -> empty();
 mapVal(F, #tree{left = L, key = K, value = V, right = R}) ->
   new(mapVal(F, L), K, F(V), mapVal(F, R)).
 
-% TODO other traversals e.g. in order
 % TODO folds -> based on traversals
