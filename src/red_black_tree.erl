@@ -4,9 +4,9 @@
 %% https://softwarefoundations.cis.upenn.edu/vfa-current/Redblack.html
 %% Red Black Tree is self-balancing binary search tree, each node has color
 -module(red_black_tree).
--export([lookup/3, insert/2, insert/3,
-    is_empty/1, is_leaf/1, bound/2,
-    forall/2,
+-export([get/3, put/2, put/3,
+    is_empty/1, is_leaf/1, is_key/2,
+    all/2,
     is_red_black/1, is_bst/1,
     from_list/1, elements/1]).
 -export([empty/0]).
@@ -40,26 +40,26 @@ red(L,K,V,R) -> node(red,L,K,V,R).
 black(L,K,V,R) -> node(black,L,K,V,R).
 
 %% @doc check if given key K exists in Red Black Tree
--spec bound(K, redblacktree(K,_V)) -> boolean().
-bound(_, empty) -> false;
-bound(X, #rbTree{left=L, key=K}) when X < K -> bound(X,L);
-bound(X, #rbTree{key=K, right=R}) when X > K -> bound(X,R);
-bound(_, _) -> true.
+-spec is_key(K, redblacktree(K,_V)) -> boolean().
+is_key(_, empty) -> false;
+is_key(X, #rbTree{left=L, key=K}) when X < K -> is_key(X,L);
+is_key(X, #rbTree{key=K, right=R}) when X > K -> is_key(X,R);
+is_key(_, _) -> true.
 
-%% @doc get value bound to K in Red Black Tree, or default value D
--spec lookup(V, K, redblacktree(K,V)) -> V.
-lookup(D, _X, empty) -> D;
-lookup(D, X, #rbTree{color=_C, left=L, key=K, value=_V, right=_R}) when X < K -> lookup(D,X,L);
-lookup(D, X, #rbTree{color=_C, left=_L, key=K, value=_V, right=R}) when X > K -> lookup(D,X,R);
-lookup(_D, _X, #rbTree{color=_C, left=_L, key=_K, value=V, right=_R}) -> V.
+%% @doc get value is_key to K in Red Black Tree, or default value D
+-spec get(V, K, redblacktree(K,V)) -> V.
+get(D, _X, empty) -> D;
+get(D, X, #rbTree{color=_C, left=L, key=K, value=_V, right=_R}) when X < K -> get(D,X,L);
+get(D, X, #rbTree{color=_C, left=_L, key=K, value=_V, right=R}) when X > K -> get(D,X,R);
+get(_D, _X, #rbTree{color=_C, left=_L, key=_K, value=V, right=_R}) -> V.
 
-%% @doc insert K := V into the Red Black Tree
--spec insert({K, V}, redblacktree(K,V)) -> redBlackNode(K,V).
-insert({K,V},T) -> insert(K,V,T).
+%% @doc put K := V into the Red Black Tree
+-spec put({K, V}, redblacktree(K,V)) -> redBlackNode(K,V).
+put({K,V},T) -> put(K,V,T).
 
-%% @doc insert K := V into the Red Black Tree
--spec insert(K, V, redblacktree(K,V)) -> redBlackNode(K,V).
-insert(X,VX,T) ->
+%% @doc put K := V into the Red Black Tree
+-spec put(K, V, redblacktree(K,V)) -> redBlackNode(K,V).
+put(X,VX,T) ->
   make_black(ins(X,VX,T)).
 
 -spec make_black(redBlackNode(K,V)) -> redBlackNode(K,V).
@@ -97,10 +97,10 @@ balance(black, T1, K, VK, #rbTree{color=red, left=B, key=Y, value=VY, right=#rbT
 balance(black,T1,K,VK,T2) -> black(T1, K, VK, T2).
 
 %% @doc check if predicate P(K,V) is true for every pair in Red Black Tree
--spec forall(fun((K,V) -> boolean()), redblacktree(K,V)) -> boolean().
-forall(_, empty) -> true;
-forall(P, #rbTree{color=_C, left=L, key=K, value=V, right=R}) ->
-  P(K,V) andalso forall(P, L) andalso forall(P, R).
+-spec all(fun((K,V) -> boolean()), redblacktree(K,V)) -> boolean().
+all(_, empty) -> true;
+all(P, #rbTree{color=_C, left=L, key=K, value=V, right=R}) ->
+  P(K,V) andalso all(P, L) andalso all(P, R).
 
 %% @doc true if this is Red Black Tree
 %% Red Black Tree have to maintain invariant
@@ -126,15 +126,15 @@ red_has_no_red_child(#rbTree{left=L, right=R}) ->
 -spec is_bst(redblacktree(_K,_V)) -> boolean().
 is_bst(empty) -> true;
 is_bst(#rbTree{left=L, key=K, right=R}) ->
-  forall(fun(K2,_) -> K2 < K end, L) andalso
-  forall(fun(K2,_) -> K2 > K end, R) andalso
+  all(fun(K2,_) -> K2 < K end, L) andalso
+  all(fun(K2,_) -> K2 > K end, R) andalso
   is_bst(L) andalso
   is_bst(R).
 
 %% @doc converts list to Red Black Tree
 -spec from_list(list({K,V})) -> redblacktree(K,V).
 from_list([]) -> empty();
-from_list(XS) -> lists:foldl(fun insert/2, empty(), XS).
+from_list(XS) -> lists:foldl(fun put/2, empty(), XS).
 
 %% @doc converts Red Black Tree to association list - in order travrsal
 -spec elements(redblacktree(K,V)) -> [{K,V}].
