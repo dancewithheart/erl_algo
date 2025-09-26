@@ -2,9 +2,10 @@
 %% Software Foundations, Volume 3, Verified Functional Algorithms
 %% Andrew W. Appel
 %% https://softwarefoundations.cis.upenn.edu/vfa-current/Redblack.html
+%% Red Black Tree is self-balancing binary search tree, each node has color
 -module(red_black_tree).
 -export([lookup/3, insert/2, insert/3,
-    is_empty/1, is_leaf/1,
+    is_empty/1, is_leaf/1, bound/2,
     forall/2,
     is_red_black/1, is_bst/1,
     from_list/1, elements/1]).
@@ -38,6 +39,13 @@ node(C,L,K,V,R) -> #rbTree{color=C, left=L, key=K, value=V, right=R}.
 red(L,K,V,R) -> node(red,L,K,V,R).
 black(L,K,V,R) -> node(black,L,K,V,R).
 
+%% @doc check if given key K exists in Red Black Tree
+-spec bound(K, redblacktree(K,_V)) -> boolean().
+bound(_, empty) -> false;
+bound(X, #rbTree{left=L, key=K}) when X < K -> bound(X,L);
+bound(X, #rbTree{key=K, right=R}) when X > K -> bound(X,R);
+bound(_, _) -> true.
+
 %% @doc get value bound to K in Red Black Tree, or default value D
 -spec lookup(V, K, redblacktree(K,V)) -> V.
 lookup(D, _X, empty) -> D;
@@ -58,13 +66,13 @@ insert(X,VX,T) ->
 make_black(T) -> T#rbTree{color=black}.
 
 -spec ins(K, V, redblacktree(K,V)) -> redBlackNode(K,V).
-ins(X,VX,empty) -> #rbTree{color=red, left=empty, key=X, value=VX, right=empty};
+ins(X,VX,empty) -> red(empty, X, VX, empty);
 ins(X,VX,#rbTree{color=C, left=A, key=Y, value=VY, right=B}) when X < Y ->
   balance(C, ins(X,VX,A), Y,VY,B);
 ins(X,VX,#rbTree{color=C, left=A, key=Y, value=VY, right=B}) when X > Y ->
   balance(C,A,Y,VY, ins(X,VX,B));
-ins(X,VX,#rbTree{color=C, left=A, key=_Y, value=_VY, right=B}) ->
-  #rbTree{color=C, left=A, key=X, value=VX, right=B}.
+ins(X,VX,#rbTree{color=C, left=A, key=Y, value=_VY, right=B}) when X == Y ->
+  node(C, A, X, VX, B).
 
 balance(red, T1, K, VK, T2) -> red(T1, K, VK, T2);
 balance(black,
