@@ -4,76 +4,76 @@
 %%%%%%%%%%%%%%%%%%
 %%% Properties %%%
 
-prop_after_insert_is_red_black() ->
+prop_after_put_is_red_black() ->
   ?FORALL( {L,V,K}, {red_black_gen(integer()), string(), integer()},
-    red_black_tree:is_red_black(red_black_tree:insert(K,V,L))
+    red_black_tree:is_red_black(red_black_tree:put(K,V,L))
   ).
 
-prop_after_insert_is_bst() ->
+prop_after_put_is_bst() ->
   ?FORALL( {L,V,K}, {red_black_gen(integer()), string(), integer()},
-    red_black_tree:is_bst(red_black_tree:insert(K,V,L))
+    red_black_tree:is_bst(red_black_tree:put(K,V,L))
   ).
 
-% lookup d k empty_tree = d
-prop_lookup_empty_gives_default() ->
+% get d k empty_tree = d
+prop_get_empty_gives_default() ->
   ?FORALL( {D,K}, {string(), integer()},
-    red_black_tree:lookup(D, K, red_black_tree:empty()) == D
+    red_black_tree:get(D, K, red_black_tree:empty()) == D
   ).
 
-% lookup d k (insert k v t) = v
-prop_lookup_inserted_gives_inserted_elem() ->
+% get d k (put k v t) = v
+prop_get_put_returns_elem() ->
   ?FORALL( {L,D,V,K}, {red_black_gen(integer()),string(),string(), integer()},
-    red_black_tree:lookup(D, K, (red_black_tree:insert(K,V,L))) == V
+    red_black_tree:get(D, K, (red_black_tree:put(K,V,L))) == V
   ).
 
-% if k ≠ k' => lookup d k' (insert k v t) = lookup d k' t  
+% if k ≠ k' => get d k' (put k v t) = get d k' t  
 
-prop_insert_different_key_not_affect_lookup() ->
+prop_put_different_key_not_affect_get() ->
   ?FORALL( {L,D,V,K,K2},
     {red_black_gen(integer()), string(), string(), integer(), integer()},
     ?IMPLIES( K =/= K2,
-      red_black_tree:lookup(D, K2, (red_black_tree:insert(K,V,L))) == red_black_tree:lookup(D,K2,L)
+      red_black_tree:get(D, K2, (red_black_tree:put(K,V,L))) == red_black_tree:get(D,K2,L)
     )).
 
-% properties for bound and insert
+% properties for is_key and put
 
-% bound k empty_tree = false
-prop_bound_empty_bst_gives_default() ->
+% is_key k empty_tree = false
+prop_is_key_empty_bst_gives_default() ->
   ?FORALL( K, integer(),
-    red_black_tree:bound(K, red_black_tree:empty()) == false
+    red_black_tree:is_key(K, red_black_tree:empty()) == false
   ).
 
-% bound k (insert k v t) = true
-prop_bound_inserted_gives_inserted_elem() ->
+% is_key k (put k v t) = true
+prop_is_key_puted_gives_puted_elem() ->
   ?FORALL( {L,V,K}, {red_black_gen(integer()),string(), integer()},
-    red_black_tree:bound(K, red_black_tree:insert(K,V,L)) == true
+    red_black_tree:is_key(K, red_black_tree:put(K,V,L)) == true
   ).
 
-% if k ≠ k' => bound k' (insert k v t) = bound k' t  
+% if k ≠ k' => is_key k' (put k v t) = is_key k' t  
 
-prop_insert_different_key_not_affect_bound() ->
+prop_put_different_key_not_affect_is_key() ->
   ?FORALL( {L,V,K,K2},
     {red_black_gen(integer()), string(), integer(), integer()},
     ?IMPLIES( K =/= K2,
-      red_black_tree:bound(K2, red_black_tree:insert(K,V,L)) == red_black_tree:bound(K2,L)
+      red_black_tree:is_key(K2, red_black_tree:put(K,V,L)) == red_black_tree:is_key(K2,L)
     )).
 
-% properties for bound and lookup
+% properties for is_key and get
 
-% bound k t == false => lookup d k t == d
-prop_if_not_bound_then_lookup_default() ->
+% is_key k t == false => get d k t == d
+prop_if_not_is_key_then_get_default() ->
   ?FORALL( {T,D,K}, {red_black_gen(integer()), string(), integer()},
-    case red_black_tree:bound(K, T) of
-      false -> red_black_tree:lookup(D, K, T) == D;
+    case red_black_tree:is_key(K, T) of
+      false -> red_black_tree:get(D, K, T) == D;
       true -> true
     end
   ).
 
-% (lookup d k t /= d) => bound k t
-prop_lookup_not_default_then_bound() ->
+% (get d k t /= d) => is_key k t
+prop_get_not_default_then_is_key() ->
   ?FORALL( {T,D,K}, {red_black_gen(integer()), string(), integer()},
-    case red_black_tree:lookup(D, K, T) /= D of
-      true -> red_black_tree:bound(K, T);
+    case red_black_tree:get(D, K, T) /= D of
+      true -> red_black_tree:is_key(K, T);
       false -> true
     end
   ).
