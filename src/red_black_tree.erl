@@ -133,8 +133,7 @@ is_bst(#rbTree{left=L, key=K, right=R}) ->
 
 %% @doc converts list to Red Black Tree
 -spec from_list(list({K,V})) -> redblacktree(K,V).
-from_list([]) -> empty();
-from_list(XS) -> lists:foldl(fun put/2, empty(), XS).
+from_list(T) -> lists:foldl(fun put/2, empty(), T).
 
 %% @doc converts Red Black Tree to association list - in order travrsal
 -spec elements(redblacktree(K,V)) -> [{K,V}].
