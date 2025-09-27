@@ -94,7 +94,7 @@ is_bst(#tree{left = L, key = K, right = R}) ->
     andalso all(fun(K2,_) -> K2 > K end, R)
     andalso is_bst(L) andalso is_bst(R).
 
-%% @doc converts BST to association list - in order travrsal
+%% @doc converts BST to association list - in order traversals
 -spec elements(bst(K,V)) -> [{K,V}].
 elements(T) -> elements(T, []).
 
@@ -104,7 +104,6 @@ elements(#tree{left = L, key = K, value = V, right = R}, Acc) ->
 
 %% @doc converts list to BST
 -spec from_list([{K,V}]) -> bst(K,V).
-from_list([]) -> empty();
 from_list(XS) -> lists:foldl(fun put/2, empty(), XS).
 
 %% @doc combine two BST into single BST
