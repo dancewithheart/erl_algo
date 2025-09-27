@@ -132,16 +132,13 @@ prop_merge_like_list_concat() ->
 %%%%%%%%%%%%%%%%%%
 %%% Generators %%%
 
-bst_gen(Gen) ->
-    ?LET(L, list(Gen), list_to_bst(L)).
+bst_gen(Gen) -> ?LET(L, list(Gen), list_to_bst(L)).
 
-list_no_duplicates(T) ->
-    ?LET(L, list(T), remove_duplicates(L)).
+list_no_duplicates(T) -> ?LET(L, list(T), remove_duplicates(L)).
 
 %%%%%%%%%%%%%%%
 %%% Helpers %%%
 
-list_to_bst([]) -> bst:empty();
 list_to_bst(L) -> bst:from_list(addStrValues(L)).
 
 addStrValues(L) -> lists:map(fun(E) -> {E, integer_to_list(E)} end, L).
