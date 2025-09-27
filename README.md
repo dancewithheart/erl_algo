@@ -1,16 +1,8 @@
 [![Erlang CI]](https://github.com/dancewithheart/erl_algo/actions/workflows/erlang.yml?query=branch%3Amain) [![GitHub last commit]](https://github.com/dancewithheart/erl_algo/commits/main/)
 
-# Why
+# erl_algo
 
-Experiments with data structures and algorithms implemented in FP using Erlang.
-
-I am exploring how development focusing on the correctness and reliability looks like, based on my experience in Scala, Haskell and formal verification in Agda and Rocq:
-* property tests, inspired by formal verification e.g. https://softwarefoundations.cis.upenn.edu/vfa-current/index.html
-* use spec/types
-* use of static code analysis
-* unit tests
-
-# What
+Experiments with data structures and algorithms implemented in FP using Erlang:
 * Binary Search Trees (BST) [src/bst.erl](./src/bst.erl), [test/prop_bst.erl](./test/prop_bst.erl)
 * Red Black Trees [red_black_tree.erl](./src/red_black_tree.erl), [test/prop_red_black_tree.erl](./test/prop_red_black_tree.erl)
 * Trie [trie.erl](./src/trie.erl), [test/prop_trie.erl](./test/prop_trie.erl)
