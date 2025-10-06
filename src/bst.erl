@@ -142,10 +142,26 @@ merge(#tree{left = L1, key = K1, value = V1, right = R1}, #tree{left = L2, key =
   merge(N, R2).
 
 % TODO delete from BST -> filter
-delete(_K, empty) -> empty;
-delete(K, #tree{left = L, key = X, right = R}) when K == X -> merge(L,R);
-delete(K, #tree{left = L, key = X, value = V, right = R}) when K < X -> new(delete(K, L), X, V, R);
-delete(K, #tree{left = L, key = X, value = V, right = R}) when K > X -> new(L, X, V, delete(K, R)).
+
+%% @doc delete entry with key K from BST
+-spec delete(T :: bst(K,V), Key :: K) -> bst(K,V).
+delete(_, empty) -> empty;
+delete(X, #tree{key = X, left = empty, right = R}) -> R;
+delete(X, #tree{key = X, left = L, right = empty}) -> L;
+delete(X, #tree{key = X, left = L, right = R}) ->
+  {{K2, V2}, R2} = delete_min(R),
+  #tree{left = L, key = K2, value = V2, right = R2};
+delete(X, #tree{key = K, value = V, left = L, right = R}) when X < K ->
+  #tree{key = K, value = V, left = delete(X, L), right = R};
+delete(X, #tree{key = K, value = V, left = L, right = R}) when X > K ->
+  #tree{key = K, value = V, left = L, right = delete(X, R)}.
+
+%% @doc delete entry with smallest key from BST, returns deleted entry and new tree
+delete_min(#tree{key = K, value = V, left = empty, right = empty}) -> {{K,V}, empty};
+delete_min(#tree{key = K, value = V, left = empty, right = R}) -> {{K,V}, R};
+delete_min(#tree{key = K, value = V, left = L, right = R}) ->
+  {{K2, V2}, L2} = delete_min(L),
+  {{K2, V2}, #tree{key = K, value = V, left = L2, right = R}}.
 
 %% @doc map values of BST
 -spec mapVal(fun((A) -> B), bst(K,A)) -> bst(K,B).

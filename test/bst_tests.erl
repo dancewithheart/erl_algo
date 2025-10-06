@@ -5,18 +5,18 @@
 
 tree_test_() ->
   BST =
-    unsafe_tree(
-      bst:new(2, "two"),
-      4, "four",
-      bst:new(5, "five")),
+    new(
+      new(2),
+      4,
+      new(5)),
   %             5
   %     2             7
   %  1     3        6   8
   %          4             9
-  BSTBig = unsafe_tree(
-      unsafe_tree(bst:new(1, "1"), 2, "2", unsafe_tree(empty, 3, "3", bst:new(4, "4"))),
-    5, "5",
-      unsafe_tree(bst:new(6, "6"), 7, "7", unsafe_tree(empty, 8, "8", bst:new(9, "9")))),
+  BSTBig = new(
+      new(new(1), 2, new(empty, 3, new(4))),
+      5,
+      new(new(6), 7, new(empty, 8, new(9)))),
     [test_put(BST),
       test_get_key_in_left_subtree(BST),
       test_get_key_in_right_subtree(BST),
@@ -28,14 +28,19 @@ tree_test_() ->
       test_inorder_traversal(BSTBig),
       test_preorder_traversal(BSTBig),
       test_preorder_traversal2(BSTBig),
-      test_postorder_traversal(BSTBig)].
+      test_postorder_traversal(BSTBig),
+      test_delete_left(),
+      test_delete_right(),
+      test_delete_parent_empty_children(),
+      test_delete_nested(),
+      test_delete_not_existing_key()].
 
 test_put(BST) ->
-  ?_assertEqual(bst:put(5, "five", (bst:put(2,"two",(bst:new(4,"four"))))), BST).
+  ?_assertEqual(bst:put(5, "5", (bst:put(2,"2",(bst:new(4,"4"))))), BST).
 test_get_key_in_right_subtree(BST) ->
-  ?_assertEqual("five", bst:get("", 5, BST)).
+  ?_assertEqual("5", bst:get("", 5, BST)).
 test_get_key_in_left_subtree(BST) ->
-  ?_assertEqual("two", bst:get("", 2, BST)).
+  ?_assertEqual("2", bst:get("", 2, BST)).
 test_get_missing_key(BST) ->
   ?_assertEqual("", bst:get("", 3, BST)).
 test_is_key_missing_key(BST) ->
@@ -44,10 +49,10 @@ test_is_bst_holds_for_valid_bst(BST) ->
   ?_assertEqual(true, bst:is_bst(BST)).
 test_is_bst_detect_invalid_bst() ->
   ?_assertEqual(false,
-    bst:is_bst(unsafe_tree(
-      bst:new(5, "five"),
-      4, "four",
-      bst:new(2, "two")
+    bst:is_bst(new(
+      new(5),
+      4,
+      new(2)
     ))
 ).
 test_elements_create_assoc_list(BST) -> ?_assertEqual(
@@ -75,4 +80,40 @@ test_postorder_traversal(BST) -> ?_assertEqual(
   bst:postorder_traversal(BST)
 ).
 
-unsafe_tree(L,K,V,R) -> {tree, L, K, V, R}.
+test_delete_left() -> ?_assertEqual(
+                         new(4),
+  bst:delete(5, new(new(4), 5, bst:empty()))
+).
+
+test_delete_right() -> ?_assertEqual(
+                                         new(6),
+  bst:delete(5, new(bst:empty(), 5, new(6)))
+).
+
+test_delete_parent_empty_children() -> ?_assertEqual(
+  new(new(4), 6, bst:empty()),
+  bst:delete(5, new(new(4), 5, new(6)))
+).
+
+test_delete_nested() ->
+  ?_assertEqual(
+              new(new(new(2), 4, bst:empty()), 5, new(bst:empty(), 6, new(7))),
+  bst:delete(3, new(new(new(2), 3, new(4)), 5, new(bst:empty(), 6,  new(7))))
+).
+
+% Keep this failing test, I want custom assert - nice visualisations, output in the format I use co create tests - use new/2 new/4 etc
+% test_delete_node_with_non_emty_children() ->
+%   ?_assertEqual(
+%   new(new(2), 3, new(bst:empty(), 6, new(7))),
+%   bst:delete(new(new(new(2), 3, new(4)), 5, new(bst:empty(), 6,  new(7))), 5)
+% ).
+
+test_delete_not_existing_key() ->
+  T = new(new(new(2), 3, new(4)), 5, new(bst:empty(), 6,  new(7))),
+  ?_assertEqual(T, bst:delete(1, T)
+).
+
+test_value(K) -> integer_to_list(K).
+new(K) -> bst:new(K, test_value(K)).
+new(L,K,R) -> new(L,K,test_value(K), R).
+new(L,K,V,R) -> {tree, L, K, V, R}.
