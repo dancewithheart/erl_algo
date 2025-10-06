@@ -11,7 +11,9 @@
     all/2, any/2,
     mapVal/2,
     merge/2,
-    elements/1, from_list/1, 
+    elements/1,
+    inorder_traversal/1, preorder_traversal/1, postorder_traversal/1,
+    from_list/1,
     is_bst/1, equal/2]).
 -export_type([emptyBst/0, bstNode/2, bst/2, predicate/2]).
 -record(tree, {left, key, value, right}).
@@ -96,11 +98,31 @@ is_bst(#tree{left = L, key = K, right = R}) ->
 
 %% @doc converts BST to association list - in order traversals
 -spec elements(bst(K,V)) -> [{K,V}].
-elements(T) -> elements(T, []).
+elements(T) -> inorder_traversal(T, []).
 
-elements(empty, Acc) -> Acc;
-elements(#tree{left = L, key = K, value = V, right = R}, Acc) ->
-    elements(L, [{K,V} | elements(R, Acc)]).
+%% @doc converts BST to association list using in-order traversals
+-spec inorder_traversal(bst(K,V)) -> [{K,V}].
+inorder_traversal(T) -> inorder_traversal(T, []).
+
+inorder_traversal(empty, Acc) -> Acc;
+inorder_traversal(#tree{left = L, key = K, value = V, right = R}, Acc) ->
+  inorder_traversal(L, [{K,V}|inorder_traversal(R, Acc)]).
+
+%% @doc converts BST to association list using pre-order traversals
+-spec preorder_traversal(bst(K,V)) -> [{K,V}].
+preorder_traversal(T) -> preorder_traversal(T, []).
+
+preorder_traversal(empty, Acc) -> Acc;
+preorder_traversal(#tree{left = L, key = K, value = V, right = R}, Acc) ->
+  [{K,V}|preorder_traversal(L, preorder_traversal(R,Acc))].
+
+%% @doc converts BST to association list using post-order traversals
+-spec postorder_traversal(bst(K,V)) -> [{K,V}].
+postorder_traversal(T) -> postorder_traversal(T, []).
+
+postorder_traversal(empty, Acc) -> Acc;
+postorder_traversal(#tree{left = L, key = K, value = V, right = R}, Acc) ->
+  postorder_traversal(L, postorder_traversal(R, [{K,V}|Acc])).
 
 %% @doc converts list to BST
 -spec from_list([{K,V}]) -> bst(K,V).
