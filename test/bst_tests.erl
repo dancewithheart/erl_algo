@@ -33,7 +33,11 @@ tree_test_() ->
       test_delete_right(),
       test_delete_parent_empty_children(),
       test_delete_nested(),
-      test_delete_not_existing_key()].
+      test_delete_not_existing_key(),
+      test_from_sorted_list(),
+      test_max_depth(),
+      test_min_depth(),
+      test_min_depth2()].
 
 test_put(BST) ->
   ?_assertEqual(bst:put(5, "5", (bst:put(2,"2",(bst:new(4,"4"))))), BST).
@@ -101,7 +105,7 @@ test_delete_nested() ->
   bst:delete(3, new(new(new(2), 3, new(4)), 5, new(bst:empty(), 6,  new(7))))
 ).
 
-% Keep this failing test, I want custom assert - nice visualisations, output in the format I use co create tests - use new/2 new/4 etc
+% Keep this failing test, I want custom assert - nice visualisations, output in the format I use to insert into tests - use new/2 new/4 etc
 % test_delete_node_with_non_emty_children() ->
 %   ?_assertEqual(
 %   new(new(2), 3, new(bst:empty(), 6, new(7))),
@@ -111,6 +115,27 @@ test_delete_nested() ->
 test_delete_not_existing_key() ->
   T = new(new(new(2), 3, new(4)), 5, new(bst:empty(), 6,  new(7))),
   ?_assertEqual(T, bst:delete(1, T)
+).
+
+test_from_sorted_list() ->
+  ?_assertEqual(
+    new(new(new(0), 1, new(2)), 3, new(new(4), 5, empty)),
+    bst:from_sorted_list(lists:map(fun(E) -> {E, integer_to_list(E)} end, [0,1,2,3,4,5]))
+  ).
+
+test_max_depth() ->
+  ?_assertEqual(3,
+    bst:max_depth(new(new(9), 3, new(new(15), 20, new(7))))
+).
+
+test_min_depth() ->
+  ?_assertEqual(2,
+    bst:min_depth(new(new(9), 3, new(new(15), 20, new(7))))
+).
+
+test_min_depth2() ->
+  ?_assertEqual(3,
+    bst:min_depth(new(empty, 2, new(empty, 3, new(4))))
 ).
 
 test_value(K) -> integer_to_list(K).
