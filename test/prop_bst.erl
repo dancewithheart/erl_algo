@@ -129,6 +129,31 @@ prop_merge_like_list_concat() ->
     end
   ).
 
+prop_sorted_postorder_traversal_and_preorder_traversal_same() ->
+  ?FORALL(
+    T1,
+    bst_gen(integer()),
+    begin
+      lists:sort(lists:map(fun({N,_}) -> N end, bst:postorder_traversal(T1))) ==
+      lists:sort(lists:map(fun({N,_}) -> N end, bst:preorder_traversal(T1)))
+    end).
+
+prop_sorted_postorder_traversal_and_inorder_traversal_same() ->
+  ?FORALL(
+    T1,
+    bst_gen(integer()),
+    begin
+      lists:sort(lists:map(fun({N,_}) -> N end, bst:postorder_traversal(T1))) ==
+      lists:sort(lists:map(fun({N,_}) -> N end, bst:inorder_traversal(T1)))
+    end).
+
+prop_height_from_sorted_list_is_O_log2() ->
+  ?FORALL( L, list(integer()),
+    begin
+      L2 = addStrValues(lists:usort(L)),
+      bst:max_depth(bst:from_sorted_list(L2)) =< math:log2(2 * length(L2) + 1)
+    end).
+
 %%%%%%%%%%%%%%%%%%
 %%% Generators %%%
 
