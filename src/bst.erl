@@ -184,13 +184,13 @@ mapVal(F, #tree{left = L, key = K, value = V, right = R}) ->
   new(mapVal(F, L), K, F(V), mapVal(F, R)).
 
 %% @doc max depth of a path from root to leaf or in BST (height of BST)
--spec max_depth(bst(_K,_V)) -> integer().
+-spec max_depth(bst(_K,_V)) -> non_neg_integer().
 max_depth(empty) -> 0;
 max_depth(#tree{left = L, right = R}) ->
   1 + max(max_depth(L), max_depth(R)).
 
 %% @doc min depth of a path from root to leaf in BST
--spec min_depth(bst(_K,_V)) -> integer().
+-spec min_depth(bst(_K,_V)) -> non_neg_integer().
 min_depth(empty) -> 0;
 min_depth(#tree{left = empty, right = empty}) -> 1;
 min_depth(#tree{left = empty, right = R}) -> 1 + min_depth(R);
