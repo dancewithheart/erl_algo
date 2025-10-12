@@ -22,9 +22,14 @@ rebar3 proper -m prop_bst
 ```
 
 * re-run property compilation / property tests on file change
-```sh
+```shell
 find . -name '*.erl' | entr rebar3 compile
 find . -name '*.erl' | entr rebar3 proper -m prop_red_black_tree
+```
+
+* REPL with compiled source code
+```shell
+rebar3 shell
 ```
 
 * static code analysis using [Dialyzer]
@@ -34,7 +39,7 @@ rebar3 dialyzer
 ```
 
 * cross file analyse using [xref]:
-```sh
+```shell
 rebar3 xref
 ```
 
