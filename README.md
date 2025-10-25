@@ -2,10 +2,13 @@
 
 # erl_algo
 
-Experiments with data structures and algorithms implemented in FP using Erlang:
-* Binary Search Trees (BST) [src/bst.erl](./src/bst.erl), [test/prop_bst.erl](./test/prop_bst.erl)
-* Red Black Trees [red_black_tree.erl](./src/red_black_tree.erl), [test/prop_red_black_tree.erl](./test/prop_red_black_tree.erl)
-* Trie [trie.erl](./src/trie.erl), [test/prop_trie.erl](./test/prop_trie.erl)
+Experiments with data structures and algorithms implemented in FP using Erlang
+* Map-like:
+  * Binary Search Trees (BST) [src/bst.erl](./src/bst.erl), [test/prop_bst.erl](./test/prop_bst.erl)
+  * Red Black Trees [red_black_tree.erl](./src/red_black_tree.erl), [test/prop_red_black_tree.erl](./test/prop_red_black_tree.erl)
+  * Trie [trie.erl](./src/trie.erl), [test/prop_trie.erl](./test/prop_trie.erl)
+* Set-like:
+  * Trie [trie_set.erl](./src/trie.erl), [test/prop_trie_set.erl](./test/prop_trie.erl)
 
 ## How [Rebar3]
 
@@ -59,7 +62,7 @@ rebar3 compile
 
 ```shell
 rebar3 eunit
-rebar3 eunit --module=fib_tests
+rebar3 eunit --module=fib
 ```
 
 ## Erlang and [Nix]
