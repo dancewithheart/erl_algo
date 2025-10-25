@@ -59,7 +59,7 @@ rebar3 compile
 
 ```shell
 rebar3 eunit
-rebar3 eunit --module=fib_tests
+rebar3 eunit --module=fib
 ```
 
 ## Erlang and [Nix]
